@@ -1,0 +1,7 @@
+# JUnit launcher jar (downloaded by the environment update script)
+/lib/
+
+# Java build output
+out/
+bin/
+*.class
