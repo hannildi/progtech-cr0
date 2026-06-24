@@ -8,6 +8,10 @@ import java.util.Map;
 public class Aruhaz {
     private final Map<Termek, Double> arak = new HashMap<>();
     private final Map<Termek, List<Kedvezmeny>> kedvezmenyek = new HashMap<>();
+    private final List<Idoszak> idoszakok = new ArrayList<>();
+
+    public Aruhaz() {
+    }
 
     public Aruhaz(Termek termek, double egysegAr) {
         arak.put(termek, egysegAr);
@@ -25,8 +29,21 @@ public class Aruhaz {
                 .add(new Kedvezmeny(hatar, kedvezmenyMertek));
     }
 
+    public void addIdoszak(Idoszak idoszak) {
+        idoszakok.add(idoszak);
+    }
+
     public double getKosarAr(Kosar kosar) {
         Map<Termek, Double> mennyisegek = osszesitMennyisegekTermekenkent(kosar);
+        return osszegSzamitas(mennyisegek);
+    }
+
+    public double getKosarAr(Kosar kosar, Idoszak idoszak) {
+        Map<Termek, Double> mennyisegek = osszesitMennyisegekTermekenkent(kosar);
+        return osszegSzamitas(mennyisegek, idoszak);
+    }
+
+    private double osszegSzamitas(Map<Termek, Double> mennyisegek) {
         double osszesen = 0.0;
 
         for (Map.Entry<Termek, Double> entry : mennyisegek.entrySet()) {
@@ -35,6 +52,22 @@ public class Aruhaz {
             double egysegAr = arak.get(termek);
             double termekOsszesen = egysegAr * mennyiseg;
             double kedvezmenyMertek = legjobbKedvezmeny(termek, mennyiseg);
+
+            osszesen += termekOsszesen * (1.0 - kedvezmenyMertek);
+        }
+
+        return kerekites5re(osszesen);
+    }
+
+    private double osszegSzamitas(Map<Termek, Double> mennyisegek, Idoszak idoszak) {
+        double osszesen = 0.0;
+
+        for (Map.Entry<Termek, Double> entry : mennyisegek.entrySet()) {
+            Termek termek = entry.getKey();
+            double mennyiseg = entry.getValue();
+            double egysegAr = idoszak.getEgysegAr(termek);
+            double termekOsszesen = egysegAr * mennyiseg;
+            double kedvezmenyMertek = idoszak.getLegjobbKedvezmeny(termek, mennyiseg);
 
             osszesen += termekOsszesen * (1.0 - kedvezmenyMertek);
         }

@@ -32,6 +32,8 @@
                     <testIncludes>
                         <testInclude>StoreCR0Tests.java</testInclude>
                         <testInclude>AruhazCR0Tesztek.java</testInclude>
+                        <testInclude>StoreCR1Tests.java</testInclude>
+                        <testInclude>AruhazCR1Tesztek.java</testInclude>
                     </testIncludes>
                 </configuration>
             </plugin>
@@ -43,6 +45,8 @@
                     <includes>
                         <include>StoreCR0Tests.java</include>
                         <include>AruhazCR0Tesztek.java</include>
+                        <include>StoreCR1Tests.java</include>
+                        <include>AruhazCR1Tesztek.java</include>
                     </includes>
                 </configuration>
             </plugin>

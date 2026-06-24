@@ -8,6 +8,10 @@ import java.util.Map;
 public class Store {
     private final Map<Product, Double> prices = new HashMap<>();
     private final Map<Product, List<Discount>> discounts = new HashMap<>();
+    private final List<Period> periods = new ArrayList<>();
+
+    public Store() {
+    }
 
     public Store(Product product, double unitPrice) {
         prices.put(product, unitPrice);
@@ -25,8 +29,21 @@ public class Store {
                 .add(new Discount(threshold, discountRate));
     }
 
+    public void addPeriod(Period period) {
+        periods.add(period);
+    }
+
     public double getCartPrice(Cart cart) {
         Map<Product, Double> quantities = sumQuantitiesByProduct(cart);
+        return calculateTotal(quantities);
+    }
+
+    public double getCartPrice(Cart cart, Period period) {
+        Map<Product, Double> quantities = sumQuantitiesByProduct(cart);
+        return calculateTotal(quantities, period);
+    }
+
+    private double calculateTotal(Map<Product, Double> quantities) {
         double total = 0.0;
 
         for (Map.Entry<Product, Double> entry : quantities.entrySet()) {
@@ -35,6 +52,22 @@ public class Store {
             double unitPrice = prices.get(product);
             double productTotal = unitPrice * quantity;
             double discountRate = findBestDiscount(product, quantity);
+
+            total += productTotal * (1.0 - discountRate);
+        }
+
+        return roundToNearestFive(total);
+    }
+
+    private double calculateTotal(Map<Product, Double> quantities, Period period) {
+        double total = 0.0;
+
+        for (Map.Entry<Product, Double> entry : quantities.entrySet()) {
+            Product product = entry.getKey();
+            double quantity = entry.getValue();
+            double unitPrice = period.getUnitPrice(product);
+            double productTotal = unitPrice * quantity;
+            double discountRate = period.getBestDiscount(product, quantity);
 
             total += productTotal * (1.0 - discountRate);
         }
